@@ -14,12 +14,25 @@ RUN git clone https://github.com/SagerNet/sing-box.git .
 WORKDIR /workspace/mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git .
 
+WORKDIR /workspace/easymosdns
+RUN git clone https://github.com/signingup/easymosdns.git .
+
+WORKDIR /workspace/mosdns
+RUN git clone https://github.com/pmkol/mosdns.git .
+
 FROM golang:1.22.4-alpine AS builder
 
 COPY --from=base /workspace/tailscale /tailscale
 COPY --from=base /workspace/singbox /singbox
 COPY --from=base /workspace/obfs4proxy /obfs4proxy
 COPY --from=base /workspace/mihomo /mihomo
+COPY --from=base /workspace/mosdns /mosdns
+
+#build mosdns
+WORKDIR /mosdns
+
+RUN go mod download
+RUN go build -o /go/bin/mosdns
 
 #build mihomo
 WORKDIR /mihomo
@@ -89,6 +102,7 @@ FROM alpine:latest
 RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl bc keepalived tcptraceroute radvd nano wget ca-certificates iptables ip6tables openssh jq iproute2 net-tools bind-tools
 
 COPY --from=builder /go/bin/. /usr/local/bin/
+COPY --from=base /workspace/easymosdns /etc/mosdns
 
 # For compat with the previous run.sh, although ideally you should be
 # using build_docker.sh which sets an entrypoint for the image.
@@ -120,5 +134,8 @@ ENV SSH_DIR=
 ENV TS_SOCKS5_PORT=1055
 
 EXPOSE 22
+EXPOSE 53
+EXPOSE 5353
+EXPOSE 9080
 
 CMD ["/usr/bin/entrypoint.sh"]
