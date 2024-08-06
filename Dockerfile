@@ -1,50 +1,47 @@
-FROM ubuntu:22.04 AS base
-
-RUN apt-get update && apt-get install -y git
-
-WORKDIR /workspace/obfs4proxy
-RUN git clone https://github.com/Yawning/obfs4.git .
-
-WORKDIR /workspace/tailscale
-RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.70.0
-
-WORKDIR /workspace/singbox
-RUN git clone https://github.com/SagerNet/sing-box.git .
-
-WORKDIR /workspace/mihomo
-RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git .
-
-WORKDIR /workspace/easymosdns
-RUN git clone https://github.com/signingup/easymosdns.git .
-
-WORKDIR /workspace/mosdns
-RUN git clone https://github.com/pmkol/mosdns.git .
-
 FROM golang:1.22.4-alpine AS builder
 
-COPY --from=base /workspace/tailscale /tailscale
-COPY --from=base /workspace/singbox /singbox
-COPY --from=base /workspace/obfs4proxy /obfs4proxy
-COPY --from=base /workspace/mihomo /mihomo
-COPY --from=base /workspace/mosdns /mosdns
+RUN apk update && apk add --no-cache git
+
+WORKDIR /obfs4proxy
+RUN git clone https://github.com/Yawning/obfs4.git .
+
+WORKDIR /tailscale
+RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.70.0
+
+WORKDIR /singbox
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.10.0-alpha.28
+
+WORKDIR /mihomo
+RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.18.7
+
+WORKDIR /easymosdns
+RUN git clone https://github.com/signingup/easymosdns.git .
+
+WORKDIR /mosdns
+RUN git clone https://github.com/pmkol/mosdns.git .
 
 #build mosdns
 WORKDIR /mosdns
 
 RUN go mod download
-RUN go build -o /go/bin/mosdns
+RUN go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
 
 #build mihomo
 WORKDIR /mihomo
 
 RUN go mod download
 
-RUN go build -tags with_gvisor -o /go/bin/mihomo
+RUN VERSION=$(git rev-parse --short HEAD) && \
+    BUILDTIME=$(date -u) && \
+    CGO_ENABLED=0 && \
+    go build -tags with_gvisor -trimpath -ldflags '-X "github.com/metacubex/mihomo/constant.Version=$(VERSION)" \
+		-X "github.com/metacubex/mihomo/constant.BuildTime=$(BUILDTIME)" \
+		-w -s -buildid=' -o /go/bin/mihomo
 
 #build obfs4
 WORKDIR /obfs4proxy
 
-RUN go build -o /go/bin/obfs4proxy ./obfs4proxy
+RUN go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/obfs4proxy ./obfs4proxy
 
 #build tailscale
 WORKDIR /tailscale
@@ -71,7 +68,8 @@ ARG VERSION_GIT_HASH=""
 ENV VERSION_GIT_HASH=$VERSION_GIT_HASH
 ARG TARGETARCH
 
-RUN GOARCH=$TARGETARCH go install -ldflags="\
+RUN GOARCH=$TARGETARCH go install -trimpath -ldflags="\
+      -s -w -buildid= \
       -X tailscale.com/version.longStamp=$VERSION_LONG \
       -X tailscale.com/version.shortStamp=$VERSION_SHORT \
       -X tailscale.com/version.gitCommitStamp=$VERSION_GIT_HASH" \
@@ -88,7 +86,7 @@ ENV CGO_ENABLED=1
 ENV GOOS=$TARGETOS
 ENV GOARCH=$TARGETARCH
 RUN set -ex \
-    && apk add git build-base linux-headers\
+    && apk add build-base linux-headers\
     && export COMMIT=$(git rev-parse --short HEAD) \
     && export VERSION=$(go run ./cmd/internal/read_tag) \
     && go build -v -trimpath -tags \
@@ -102,7 +100,7 @@ FROM alpine:latest
 RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl bc keepalived tcptraceroute radvd nano wget ca-certificates iptables ip6tables openssh jq iproute2 net-tools bind-tools
 
 COPY --from=builder /go/bin/. /usr/local/bin/
-COPY --from=base /workspace/easymosdns /etc/mosdns
+COPY --from=builder /easymosdns /etc/mosdns
 
 # For compat with the previous run.sh, although ideally you should be
 # using build_docker.sh which sets an entrypoint for the image.
