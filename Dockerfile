@@ -3,22 +3,22 @@ FROM golang:1.22.4-alpine AS builder
 RUN apk update && apk add --no-cache git
 
 WORKDIR /obfs4proxy
-RUN git clone --depth 1 https://github.com/Yawning/obfs4.git .
+RUN git clone https://github.com/Yawning/obfs4.git .
 
 WORKDIR /tailscale
-RUN git clone --depth 1 https://github.com/tailscale/tailscale.git . && git checkout v1.70.0
+RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.70.0
 
 WORKDIR /singbox
-RUN git clone --depth 1 https://github.com/SagerNet/sing-box.git . && git checkout v1.10.0-alpha.28
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.10.0-alpha.28
 
 WORKDIR /mihomo
-RUN git clone -b Alpha --depth 1 https://github.com/MetaCubeX/mihomo.git . && git checkout v1.18.7
+RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.18.7
 
 WORKDIR /easymosdns
-RUN git clone --depth 1 https://github.com/signingup/easymosdns.git .
+RUN git clone https://github.com/signingup/easymosdns.git .
 
 WORKDIR /mosdns
-RUN git clone --depth 1 https://github.com/pmkol/mosdns.git .
+RUN git clone https://github.com/pmkol/mosdns.git . && rm -rf .git
 
 #build mosdns
 WORKDIR /mosdns
