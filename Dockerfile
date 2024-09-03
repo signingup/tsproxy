@@ -12,7 +12,7 @@ WORKDIR /singbox
 RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.10.0-beta.5
 
 WORKDIR /mihomo
-RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.18.7
+RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.18.8
 
 WORKDIR /easymosdns
 RUN git clone https://github.com/signingup/easymosdns.git .
