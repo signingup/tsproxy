@@ -41,8 +41,8 @@ RUN go mod download
 RUN VERSION=$(git rev-parse --short HEAD) && \
     BUILDTIME=$(date -u) && \
     CGO_ENABLED=0 && \
-    go build -tags with_gvisor -trimpath -ldflags '-X "github.com/metacubex/mihomo/constant.Version=$VERSION" \
-		-X "github.com/metacubex/mihomo/constant.BuildTime=$BUILDTIME" \
+    go build -tags with_gvisor -trimpath -ldflags '-X "github.com/metacubex/mihomo/constant.Version=${VERSION}" \
+		-X "github.com/metacubex/mihomo/constant.BuildTime=${BUILDTIME}" \
 		-w -s -buildid=' -o /go/bin/mihomo
 
 #build obfs4
