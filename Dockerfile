@@ -15,10 +15,10 @@ WORKDIR /mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.18.8
 
 WORKDIR /easymosdns
-RUN git clone https://github.com/signingup/easymosdns.git .
+RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 
 WORKDIR /mosdns
-RUN git clone https://github.com/pmkol/mosdns.git . && rm -rf .git
+RUN git clone https://github.com/pmkol/mosdns.git .
 
 WORKDIR /cfst
 RUN git clone https://github.com/XIU2/CloudflareSpeedTest.git . && git checkout v2.2.5
