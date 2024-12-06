@@ -122,7 +122,7 @@ RUN mkdir -p /run/radvd
 RUN mkdir -p /var/run/sshd
 # Configure SSH
 RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa
-RUN ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
+#RUN ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa
 RUN mkdir -p /root/.ssh && \
     chmod 700 /root/.ssh
 
