@@ -20,9 +20,6 @@ RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 WORKDIR /mosdns
 RUN git clone https://github.com/pmkol/mosdns.git .
 
-WORKDIR /cfst
-RUN git clone https://github.com/XIU2/CloudflareSpeedTest.git . && git checkout v2.2.5
-
 #build cfst
 RUN go mod download
 RUN go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/cloudflarespeedtest
@@ -108,7 +105,6 @@ RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl bc keepa
 
 COPY --from=builder /go/bin/. /usr/local/bin/
 COPY --from=builder /easymosdns /etc/mosdns
-COPY --from=builder /cfst/ip*.txt /usr/local/bin/
 
 # For compat with the previous run.sh, although ideally you should be
 # using build_docker.sh which sets an entrypoint for the image.
