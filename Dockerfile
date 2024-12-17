@@ -20,10 +20,6 @@ RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 WORKDIR /mosdns
 RUN git clone https://github.com/pmkol/mosdns.git .
 
-#build cfst
-RUN go mod download
-RUN go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/cloudflarespeedtest
-
 #build mosdns
 WORKDIR /mosdns
 
