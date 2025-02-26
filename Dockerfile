@@ -97,7 +97,7 @@ RUN set -ex \
 
 FROM alpine:latest
 
-RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl bc keepalived tcptraceroute radvd nano wget ca-certificates tor iptables ip6tables openssh openssh-keygen jq iproute2 net-tools bind-tools
+RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl htop bc keepalived tcptraceroute radvd nano wget ca-certificates tor iptables ip6tables openssh openssh-keygen jq iproute2 net-tools bind-tools
 
 COPY --from=builder /go/bin/. /usr/local/bin/
 COPY --from=builder /easymosdns /etc/mosdns
