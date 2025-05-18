@@ -1,6 +1,6 @@
 FROM golang:1.24.3-alpine AS builder
 
-RUN apk update && apk add --no-cache git
+RUN apk update && apk add --no-cache git make nodejs npm
 
 WORKDIR /obfs4proxy
 RUN git clone https://github.com/Yawning/obfs4.git .
@@ -19,6 +19,9 @@ RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 
 WORKDIR /mosdns
 RUN git clone https://github.com/pmkol/mosdns.git .
+
+WORKDIR /adguardhome
+RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.61
 
 #build mosdns
 WORKDIR /mosdns
@@ -95,12 +98,17 @@ RUN set -ex \
         -ldflags "-X \"github.com/sagernet/sing-box/constant.Version=$VERSION\" -s -w -buildid=" \
         ./cmd/sing-box
 
+#build adguardhome
+WORKDIR /adguardhome
+RUN make init && make -j 1
+
 FROM alpine:latest
 
 RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl htop bc keepalived tcptraceroute radvd nano wget ca-certificates tor iptables ip6tables openssh openssh-keygen jq iproute2 net-tools bind-tools
 
 COPY --from=builder /go/bin/. /usr/local/bin/
 COPY --from=builder /easymosdns /etc/mosdns
+COPY --from=builder /adguardhome/AdGuardHome /usr/local/bin/
 
 # For compat with the previous run.sh, although ideally you should be
 # using build_docker.sh which sets an entrypoint for the image.
