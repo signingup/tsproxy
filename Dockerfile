@@ -27,7 +27,7 @@ RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v
 WORKDIR /mosdns
 
 RUN go mod download
-RUN go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
+RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
 
 #build mihomo
 WORKDIR /mihomo
@@ -44,7 +44,7 @@ RUN VERSION=$(git rev-parse --short HEAD) && \
 #build obfs4
 WORKDIR /obfs4proxy
 
-RUN go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/obfs4proxy ./obfs4proxy
+RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/obfs4proxy ./obfs4proxy
 
 #build tailscale
 WORKDIR /tailscale
@@ -71,7 +71,7 @@ ARG VERSION_GIT_HASH=""
 ENV VERSION_GIT_HASH=$VERSION_GIT_HASH
 ARG TARGETARCH
 
-RUN GOARCH=$TARGETARCH go install -trimpath -ldflags="\
+RUN CGO_ENABLED=0 GOARCH=$TARGETARCH go install -trimpath -ldflags="\
       -s -w -buildid= \
       -X tailscale.com/version.longStamp=$VERSION_LONG \
       -X tailscale.com/version.shortStamp=$VERSION_SHORT \
@@ -85,7 +85,7 @@ ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 ARG GOPROXY=""
 ENV GOPROXY ${GOPROXY}
-ENV CGO_ENABLED=1
+ENV CGO_ENABLED=0
 ENV GOOS=$TARGETOS
 ENV GOARCH=$TARGETARCH
 RUN set -ex \
@@ -104,7 +104,8 @@ RUN make init && make -j 1
 
 FROM alpine:latest
 
-RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl htop bc keepalived tcptraceroute radvd nano wget ca-certificates tor iptables ip6tables openssh openssh-keygen jq iproute2 net-tools bind-tools
+RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl htop bc keepalived tcptraceroute radvd nano wget ca-certificates tor iptables ip6tables openssh openssh-keygen jq iproute2 net-tools bind-tools && \
+    rm -rf /var/cache/apk/*
 
 COPY --from=builder /go/bin/. /usr/local/bin/
 COPY --from=builder /easymosdns /etc/mosdns
