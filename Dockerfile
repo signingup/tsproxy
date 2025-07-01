@@ -9,7 +9,7 @@ WORKDIR /tailscale
 RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.84.2
 
 WORKDIR /singbox
-RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.0-beta.28
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.0-beta.30
 
 WORKDIR /mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.11
@@ -21,7 +21,7 @@ WORKDIR /mosdns
 RUN git clone https://github.com/pmkol/mosdns.git .
 
 WORKDIR /adguardhome
-RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.62
+RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.63
 
 #build mosdns
 WORKDIR /mosdns
