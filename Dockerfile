@@ -1,4 +1,4 @@
-FROM golang:1.24.5-alpine AS builder
+FROM golang:1.24.4-alpine AS builder
 
 RUN apk update && apk add --no-cache git make nodejs npm
 
@@ -9,7 +9,7 @@ WORKDIR /tailscale
 RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.84.3
 
 WORKDIR /singbox
-RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.0-beta.34
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.0-beta.35
 
 WORKDIR /mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.11
