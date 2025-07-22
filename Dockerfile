@@ -1,3 +1,12 @@
+FROM golang:1.19-alpine AS builder-mosdns
+WORKDIR /mosdns
+RUN git clone https://github.com/pmkol/mosdns.git .
+#build mosdns
+WORKDIR /mosdns
+
+RUN go mod download
+RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
+
 FROM golang:1.24.5-alpine AS builder
 
 RUN apk update && apk add --no-cache git make nodejs npm
@@ -17,17 +26,8 @@ RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout
 WORKDIR /easymosdns
 RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 
-WORKDIR /mosdns
-RUN git clone https://github.com/pmkol/mosdns.git .
-
 WORKDIR /adguardhome
 RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.63
-
-#build mosdns
-WORKDIR /mosdns
-
-RUN go mod download
-RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
 
 #build mihomo
 WORKDIR /mihomo
@@ -107,6 +107,7 @@ FROM alpine:latest
 RUN apk add --no-cache git rsync sed tzdata grep dcron openrc bash curl htop bc keepalived tcptraceroute radvd nano wget ca-certificates tor iptables ip6tables openssh openssh-keygen jq iproute2 net-tools bind-tools && \
     rm -rf /var/cache/apk/*
 
+COPY --from=builder-mosdns /go/bin/mosdns /usr/local/bin/mosdns
 COPY --from=builder /go/bin/. /usr/local/bin/
 COPY --from=builder /easymosdns /etc/mosdns
 COPY --from=builder /adguardhome/AdGuardHome /usr/local/bin/
