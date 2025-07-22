@@ -1,4 +1,7 @@
 FROM golang:1.19-alpine AS builder-mosdns
+
+RUN apk update && apk add --no-cache git make
+
 WORKDIR /mosdns
 RUN git clone https://github.com/pmkol/mosdns.git .
 #build mosdns
