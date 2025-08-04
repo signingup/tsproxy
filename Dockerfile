@@ -21,7 +21,7 @@ WORKDIR /tailscale
 RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.84.3
 
 WORKDIR /singbox
-RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.0-rc.4
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.0
 
 WORKDIR /mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.11
