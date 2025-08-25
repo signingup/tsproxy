@@ -10,7 +10,7 @@ WORKDIR /mosdns
 RUN go mod download
 RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
 
-FROM golang:1.24.6-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 RUN apk update && apk add --no-cache git make nodejs npm
 
@@ -18,10 +18,10 @@ WORKDIR /obfs4proxy
 RUN git clone https://github.com/Yawning/obfs4.git .
 
 WORKDIR /tailscale
-RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.86.4
+RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.86.5
 
 WORKDIR /singbox
-RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.1
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.12.3
 
 WORKDIR /mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.12
@@ -30,7 +30,7 @@ WORKDIR /easymosdns
 RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 
 WORKDIR /adguardhome
-RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.64
+RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.65
 
 #build mihomo
 WORKDIR /mihomo
