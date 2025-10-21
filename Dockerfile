@@ -21,7 +21,7 @@ WORKDIR /tailscale
 RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.88.4
 
 WORKDIR /singbox
-RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.13.0-alpha.23
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.13.0-alpha.24
 
 WORKDIR /mihomo
 RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.15
@@ -96,7 +96,7 @@ RUN set -ex \
     && export COMMIT=$(git rev-parse --short HEAD) \
     && export VERSION=$(go run ./cmd/internal/read_tag) \
     && go build -v -trimpath -tags \
-        "with_gvisor,with_quic,with_dhcp,with_wireguard,with_utls,with_acme,with_clash_api,with_embedded_tor,staticOpenssl,staticZlib,staticLibevent,with_tailscale,badlinkname,tfogo_checklinkname0" \
+        "with_gvisor,with_quic,with_dhcp,with_wireguard,with_utls,with_acme,with_clash_api,with_embedded_tor,staticOpenssl,staticZlib,staticLibevent,with_tailscale,with_ccm,badlinkname,tfogo_checklinkname0" \
         -o /go/bin/sing-box \
         -ldflags "-X \"github.com/sagernet/sing-box/constant.Version=$VERSION\" -s -w -buildid= -checklinkname=0" \
         ./cmd/sing-box
