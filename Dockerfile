@@ -10,7 +10,7 @@ WORKDIR /mosdns
 RUN go mod download
 RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
 
-FROM golang:1.25.1-alpine AS builder
+FROM golang:1.25-alpine AS builder
 
 RUN apk update && apk add --no-cache git make nodejs npm
 
@@ -18,7 +18,7 @@ WORKDIR /obfs4proxy
 RUN git clone https://github.com/Yawning/obfs4.git .
 
 WORKDIR /tailscale
-RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.91.0-pre
+RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.90.0
 
 WORKDIR /singbox
 RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.13.0-alpha.25
