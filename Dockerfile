@@ -18,7 +18,7 @@ WORKDIR /obfs4proxy
 RUN git clone https://github.com/Yawning/obfs4.git .
 
 WORKDIR /tailscale
-RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.90.0
+RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.90.1
 
 WORKDIR /singbox
 RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.13.0-alpha.25
