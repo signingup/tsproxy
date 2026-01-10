@@ -18,19 +18,19 @@ WORKDIR /obfs4proxy
 RUN git clone https://github.com/Yawning/obfs4.git .
 
 WORKDIR /tailscale
-RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.92.0
+RUN git clone https://github.com/tailscale/tailscale.git . && git checkout v1.92.5
 
 WORKDIR /singbox
-RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.13.0-alpha.27
+RUN git clone https://github.com/SagerNet/sing-box.git . && git checkout v1.13.0-beta.2
 
 WORKDIR /mihomo
-RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.16
+RUN git clone -b Alpha https://github.com/MetaCubeX/mihomo.git . && git checkout v1.19.18
 
 WORKDIR /easymosdns
 RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 
 WORKDIR /adguardhome
-RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.69
+RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.71
 
 #build mihomo
 WORKDIR /mihomo
