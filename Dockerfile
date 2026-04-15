@@ -10,7 +10,7 @@ WORKDIR /mosdns
 RUN go mod download
 RUN CGO_ENABLED=0 go build -trimpath -ldflags '-w -s -buildid=' -o /go/bin/mosdns
 
-FROM golang:1.25-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 RUN apk update && apk add --no-cache git make nodejs npm
 
@@ -30,7 +30,7 @@ WORKDIR /easymosdns
 RUN git clone https://github.com/signingup/easymosdns.git . && rm -rf .git
 
 WORKDIR /adguardhome
-RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.72
+RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && git checkout v0.107.73
 
 #build mihomo
 WORKDIR /mihomo
